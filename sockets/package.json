@@ -1,0 +1,17 @@
+{
+  "name": "sockets",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "author": "hecker",
+  "license": "ISC",
+  "dependencies": {
+    "node-rsa": "1.1.1",
+    "pg": "^8.11.5",
+    "ws": "8.16.0"
+  }
+}

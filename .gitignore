@@ -1,0 +1,8 @@
+
+/.idea
+/.venv
+/app/.idea
+/certs
+/sockets/.idea
+/sockets/node_modules
+/lock

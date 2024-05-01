@@ -1,0 +1,7 @@
+pydantic
+psycopg2-binary
+uvicorn
+pycryptodome
+fastapi
+APscheduler
+requests

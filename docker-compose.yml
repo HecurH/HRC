@@ -1,0 +1,84 @@
+version: '3.8'
+
+services:
+  sockets:
+    container_name: sockets_container
+    build: ./sockets
+    restart: unless-stopped
+
+    command: npm start
+    volumes:
+      - ./sockets/:/app/
+
+
+    networks:
+      - postgres
+    depends_on:
+      postgres:
+        condition: service_healthy
+    expose:
+      - '5000'
+
+  api:
+    container_name: api_container
+    build: ./app
+    restart: unless-stopped
+
+    command: uvicorn main:app --proxy-headers --workers 4 --log-level debug --uds /lock/server.sock
+    volumes:
+      - ./app/:/app/
+      - ./lock/:/lock/
+      - /home/hecker/smth/:/home/hecker/smth/
+    networks:
+      - postgres
+    depends_on:
+      postgres:
+        condition: service_healthy
+  nginx:
+    container_name: nginx_container
+    image: nginx:latest
+    restart: always
+
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./certs/:/certs/
+      - ./lock/:/lock/
+    networks:
+      - postgres
+
+  postgres:
+    container_name: postgres_container
+    image: postgres
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-hrc}
+      POSTGRES_USER: ${POSTGRES_USER:-USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-PASSWORD}
+      PGDATA: /data/postgres
+    volumes:
+      - postgres:/data/postgres
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U USER -d hrc" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+    networks:
+      - postgres
+    restart: always
+
+
+
+networks:
+  postgres:
+    driver: bridge
+
+
+volumes:
+    nginx:
+    postgres:
