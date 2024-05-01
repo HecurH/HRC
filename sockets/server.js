@@ -18,10 +18,9 @@ function randomString(len, charSet) {
 }
 
 wss.on('connection', function connection(ws) {
-  const key = randomString(16);
+  ws.key = randomString(16);
   ws.send(tools.resp("INFO", {message: "Подключен. Ожидаю запрос auth с рег. информацией",
-                                        key: key}))
-  ws.key = key
+                                        key: ws.key}))
   ws.isAlive = true;
   ws.authorized = false;
 
