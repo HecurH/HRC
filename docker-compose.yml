@@ -28,7 +28,6 @@ services:
     volumes:
       - ./app/:/app/
       - ./lock/:/lock/
-      - /home/hecker/smth/:/home/hecker/smth/
     networks:
       - postgres
     depends_on:
